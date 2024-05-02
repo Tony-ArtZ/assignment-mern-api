@@ -27,6 +27,10 @@ router.post("/reset", async (req, res, next) => {
     if (!user) {
       return next(createHttpError(404, "User not found!"));
     }
+    // Check if token is valid
+    if (user.passwordResetToken !== token) {
+      return next(createHttpError(400, "Invalid token!"));
+    }
     // Update user password
     const hashedPassword = bcrypt.hashSync(password, 10);
     await prisma.user.update({
@@ -35,6 +39,7 @@ router.post("/reset", async (req, res, next) => {
       },
       data: {
         password: hashedPassword,
+        passwordResetToken: null,
       },
     });
     // Return user
