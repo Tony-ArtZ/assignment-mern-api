@@ -7,7 +7,7 @@ import { authenticateToken } from "./utils/middleware.js";
 import rateLimit from "express-rate-limit";
 import { postRouter } from "./routes/post.js";
 import { passwordRouter } from "./routes/password.js";
-const app = express();
+export const app = express();
 const PORT = 3000;
 
 //Rate limiter
@@ -30,7 +30,7 @@ app.use("/password", passwordRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  // console.error(err.stack);
   res.status(err.status || 500).json({
     error: err,
   });
@@ -40,6 +40,6 @@ app.get("/", authenticateToken, (req, res) => {
   res.json({ message: `Welcome to the API! ${req.user.email}` });
 });
 
-app.listen(PORT, () => {
+export const server = app.listen(PORT, () => {
   console.log(`Server is running on PORT ${PORT}`);
 });
